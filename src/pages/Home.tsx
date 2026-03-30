@@ -69,7 +69,7 @@ export function Home() {
         <div className="home-rank-intro">
           <div className="home-rank-intro-text">
             <h2 id="home-rank-title" className="home-section-title">
-              各党小组实时排行
+              各铁军小组实时排行
             </h2>
           </div>
           <ul className="home-stat-pills" aria-label="数据概览">
@@ -91,7 +91,7 @@ export function Home() {
         <div className="rank-card home-rank-card">
           <header className="rank-head">
             <span>排名</span>
-            <span>党小组</span>
+            <span>铁军小组</span>
             <span>累计步数（米）</span>
             <span>路线进度</span>
           </header>

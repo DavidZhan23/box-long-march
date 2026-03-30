@@ -16,7 +16,7 @@ export function Admin() {
     <div className="page admin-page">
       <h1 className="page-title">数据录入</h1>
       {/* <p className="lede narrow">
-        在此填写各党小组累计步数（<strong>1 步 = 1 米</strong>）。保存后写入浏览器本地存储，
+        在此填写各铁军小组累计步数（<strong>1 步 = 1 米</strong>）。保存后写入浏览器本地存储，
         排行榜与地图会优先使用此处数据。部署到服务器时，可将导出的 <code>groups.json</code> 放到{' '}
         <code>public/data/</code> 目录覆盖默认文件。
       </p> */}
@@ -35,7 +35,7 @@ export function Admin() {
         <table className="admin-table">
           <thead>
             <tr>
-              <th>党小组</th>
+              <th>铁军小组</th>
               <th>累计步数（米）</th>
             </tr>
           </thead>
@@ -63,7 +63,7 @@ export function Admin() {
       </div>
 
       {/* <p className="muted small">
-        若需新增党小组，请编辑项目中的 <code>public/data/groups.json</code> 增加条目（含 id、name、steps、color），刷新页面后再录入步数。
+        若需调整小组，请编辑项目中的 <code>public/data/groups.json</code> 修改条目（含 id、name、steps、color），刷新页面后再录入步数。
       </p> */}
     </div>
   )

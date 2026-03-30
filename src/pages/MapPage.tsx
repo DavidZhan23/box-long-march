@@ -49,7 +49,7 @@ export function MapPage() {
       <div className="map-intro">
         <h1 className="page-title">长征路线大地图</h1>
         {/* <p className="lede narrow">
-          深红色折线为按<strong>十八处关键节点</strong>顺序连接的示意路线（节点经纬度不变）；浅色圆点为历史节点，彩色圆点为各党小组位置。
+          深红色折线为按<strong>十八处关键节点</strong>顺序连接的示意路线（节点经纬度不变）；浅色圆点为历史节点，彩色圆点为各铁军小组位置。
           累计步数（米）按<strong>二万五千里</strong>叙事总里程（{ROUTE_TOTAL_LI.toLocaleString()} 里 ≈{' '}
           {(ROUTE_TOTAL_METERS / 1000).toLocaleString()} 千米，1 里 = 500 米）映射到折线弧长，达到或超过总里程则停在终点。
         </p> */}

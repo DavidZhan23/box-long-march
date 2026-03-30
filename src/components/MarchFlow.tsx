@@ -28,7 +28,7 @@ export function MarchFlow() {
           圆点变为彩色表示已走过该节点， <strong> 外圈高亮</strong>表示该小组处于当前节点。
         </p>
         {groupsInOrder.length > 0 && (
-          <div className="march-flow-legend" aria-label="党小组图例（按第一至第六顺序）">
+          <div className="march-flow-legend" aria-label="铁军小组图例（一组至七组顺序）">
             {groupsInOrder.map((g) => (
               <span key={g.id} className="march-flow-legend-item">
                 <span
@@ -86,7 +86,7 @@ export function MarchFlow() {
                   <div className="march-flow-reward-text">
                     <span className="march-flow-reward-title">全员会师</span>
                     <span className="march-flow-reward-desc">
-                      各党小组均已到达此节点
+                      各铁军小组均已到达此节点
                     </span>
                   </div>
                 </div>
@@ -100,7 +100,7 @@ export function MarchFlow() {
                   ]
                     .filter(Boolean)
                     .join(' ')}
-                  aria-label={`${node.name}：各党小组进度（第一至第六顺序）`}
+                  aria-label={`${node.name}：各铁军小组进度（一组至七组顺序）`}
                 >
                   {groupsInOrder.map((g) => {
                     const furthest = furthestById.get(g.id) ?? 1
