@@ -2,6 +2,10 @@
 # 使用前请在仓库 Settings → Pages → Build and deployment → Source 选「GitHub Actions」
 name: Deploy to GitHub Pages
 
+# 避免 actions 在 Node 20 上运行产生弃用告警（2026 起默认 Node 24）
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 on:
   push:
     branches: [main, master]
@@ -24,7 +28,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
           cache: npm
       - name: Install & build
         env:

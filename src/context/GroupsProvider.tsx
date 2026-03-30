@@ -13,8 +13,9 @@ export function GroupsProvider({ children }: { children: ReactNode }) {
     ;(async () => {
       try {
         const cached = loadGroupsFromStorage()
-        const res = await fetch('/data/groups.json')
-        if (!res.ok) throw new Error('无法加载 /data/groups.json')
+        const dataUrl = `${import.meta.env.BASE_URL}data/groups.json`
+        const res = await fetch(dataUrl)
+        if (!res.ok) throw new Error(`无法加载 ${dataUrl}`)
         const base = (await res.json()) as PartyGroup[]
         if (cancelled) return
         if (cached && cached.length) {
