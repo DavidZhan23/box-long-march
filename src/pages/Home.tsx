@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { MarchFlow } from '../components/MarchFlow'
 import { MarchReadingSection } from '../components/MarchReadingSection'
-import { ROUTE_TOTAL_LI, ROUTE_TOTAL_METERS } from '../data/longMarchRoute'
+import { ROUTE_TOTAL_LI, ROUTE_TOTAL_METERS, storedStepsToLogicalMeters } from '../data/longMarchRoute'
 import { useGroups } from '../hooks/useGroups'
 
 function medal(rank: number) {
@@ -14,8 +14,8 @@ function medal(rank: number) {
 
 export function Home() {
   const { sortedGroups, loading, error } = useGroups()
-  const totalSteps = useMemo(
-    () => sortedGroups.reduce((sum, g) => sum + g.steps, 0),
+  const totalLogicalMeters = useMemo(
+    () => sortedGroups.reduce((sum, g) => sum + storedStepsToLogicalMeters(g.steps), 0),
     [sortedGroups],
   )
 
@@ -78,8 +78,10 @@ export function Home() {
               <span className="home-stat-pill-label">参与小组</span>
             </li>
             <li className="home-stat-pill">
-              <span className="home-stat-pill-value">{totalSteps.toLocaleString()}</span>
-              <span className="home-stat-pill-label">累计总步数（米）</span>
+              <span className="home-stat-pill-value">
+                {Math.round(totalLogicalMeters).toLocaleString()}
+              </span>
+              <span className="home-stat-pill-label">累计折合里程（米）</span>
             </li>
             <li className="home-stat-pill home-stat-pill--accent">
               <span className="home-stat-pill-value">{ROUTE_TOTAL_METERS.toLocaleString()}</span>
@@ -89,47 +91,82 @@ export function Home() {
         </div>
 
         <div className="rank-card home-rank-card">
-          <header className="rank-head">
-            <span>排名</span>
-            <span>铁军小组</span>
-            <span>累计步数（米）</span>
-            <span>路线进度</span>
-          </header>
-          <ul className="rank-list">
-            {sortedGroups.map((g, i) => {
-              const rank = i + 1
-              const pct =
-                ROUTE_TOTAL_METERS > 0 ? Math.min(100, (g.steps / ROUTE_TOTAL_METERS) * 100) : 0
-              const rowClass = ['rank-row', rank <= 3 && 'rank-row--top', rank === 1 && 'rank-row--first']
-                .filter(Boolean)
-                .join(' ')
-              return (
-                <li key={g.id} className={rowClass}>
-                  <span className="rank-medal" title={`第 ${rank} 名`}>
-                    {medal(rank)}
-                  </span>
-                  <div className="rank-name-col">
-                    <span className="rank-name">
-                      <span className="name-dot" style={{ background: g.color }} />
-                      {g.name}
-                    </span>
-                    {g.members && g.members.length > 0 ? (
-                      <span className="rank-members" aria-label={`${g.name}成员`}>
-                        {g.members.join('、')}
-                      </span>
-                    ) : null}
-                  </div>
-                  <span className="rank-steps">{g.steps.toLocaleString()}</span>
-                  <span className="rank-progress">
-                    <span className="progress-bar" aria-hidden>
-                      <span className="progress-fill" style={{ width: `${pct}%` }} />
-                    </span>
-                    <span className="progress-label">{pct.toFixed(1)}%</span>
-                  </span>
-                </li>
-              )
-            })}
-          </ul>
+          <div className="rank-table-wrap">
+            <table className="rank-table">
+              <thead>
+                <tr>
+                  <th scope="col" className="rank-th rank-th--medal">
+                    排名
+                  </th>
+                  <th scope="col" className="rank-th rank-th--name">
+                    铁军小组
+                  </th>
+                  <th scope="col" className="rank-th rank-th--num">
+                    累计步数
+                  </th>
+                  <th scope="col" className="rank-th rank-th--num">
+                    折合里程（米）
+                  </th>
+                  <th scope="col" className="rank-th rank-th--progress">
+                    路线进度
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {sortedGroups.map((g, i) => {
+                  const rank = i + 1
+                  const logicalM = storedStepsToLogicalMeters(g.steps)
+                  const pct =
+                    ROUTE_TOTAL_METERS > 0
+                      ? Math.min(100, (logicalM / ROUTE_TOTAL_METERS) * 100)
+                      : 0
+                  const trClass = [
+                    'rank-tr',
+                    rank <= 3 && 'rank-tr--top',
+                    rank === 1 && 'rank-tr--first',
+                  ]
+                    .filter(Boolean)
+                    .join(' ')
+                  return (
+                    <tr key={g.id} className={trClass}>
+                      <td className="rank-td rank-td--medal">
+                        <span className="rank-medal" title={`第 ${rank} 名`}>
+                          {medal(rank)}
+                        </span>
+                      </td>
+                      <td className="rank-td rank-td--name">
+                        <div className="rank-name-col">
+                          <span className="rank-name">
+                            <span className="name-dot" style={{ background: g.color }} />
+                            {g.name}
+                          </span>
+                          {g.members && g.members.length > 0 ? (
+                            <span className="rank-members" aria-label={`${g.name}成员`}>
+                              {g.members.join('、')}
+                            </span>
+                          ) : null}
+                        </div>
+                      </td>
+                      <td className="rank-td rank-td--num rank-td--steps" title="录入的原始步数">
+                        {g.steps.toLocaleString()}
+                      </td>
+                      <td className="rank-td rank-td--num rank-td--meters">
+                        {Math.round(logicalM).toLocaleString()}
+                      </td>
+                      <td className="rank-td rank-td--progress">
+                        <div className="rank-progress">
+                          <span className="progress-bar" aria-hidden>
+                            <span className="progress-fill" style={{ width: `${pct}%` }} />
+                          </span>
+                          <span className="progress-label">{pct.toFixed(1)}%</span>
+                        </div>
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
       </section>
 

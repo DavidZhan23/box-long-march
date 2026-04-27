@@ -416,16 +416,16 @@ body {
   box-shadow: 0 16px 48px rgba(160, 48, 58, 0.1);
 }
 
-.rank-row--top {
+.rank-tr--top {
   background: linear-gradient(90deg, rgba(255, 248, 246, 0.95) 0%, rgba(255, 255, 255, 0.4) 100%);
 }
 
-.rank-row--first {
+.rank-tr--first {
   background: linear-gradient(90deg, rgba(255, 236, 230, 0.75) 0%, rgba(255, 255, 255, 0.4) 100%);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
-.rank-row--top .rank-medal {
+.rank-tr--top .rank-medal {
   font-size: 1.5rem;
 }
 
@@ -1125,42 +1125,105 @@ body {
   box-shadow: var(--shadow);
 }
 
-.rank-head {
-  display: grid;
-  grid-template-columns: minmax(3rem, 4rem) 1fr minmax(7rem, 9rem) minmax(10rem, 14rem);
-  gap: 0.75rem;
-  padding: 0.85rem 1.25rem;
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+/* 首页铁军排行：用 table 保证表头与数据列对齐 */
+.rank-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.rank-table {
+  width: 100%;
+  min-width: 0;
+  table-layout: fixed;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.rank-th,
+.rank-td {
+  padding: 0.75rem 0.6rem;
+  vertical-align: middle;
+  box-sizing: border-box;
+}
+
+.rank-td--name {
+  vertical-align: top;
+  padding-top: 0.9rem;
+  padding-bottom: 0.9rem;
+}
+
+.rank-th--medal,
+.rank-td--medal {
+  width: 3.5rem;
+  text-align: center;
+  padding-left: 0.5rem;
+  padding-right: 0.4rem;
+}
+
+.rank-th--name,
+.rank-td--name {
+  text-align: left;
+  min-width: 0;
+  width: 28%;
+  word-break: break-word;
+}
+
+.rank-th--num,
+.rank-td--num {
+  width: 6.2rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  padding-left: 0.35rem;
+  padding-right: 0.5rem;
+}
+
+.rank-th--progress,
+.rank-td--progress {
+  width: 30%;
+  min-width: 9.5rem;
+  text-align: right;
+  padding-left: 0.5rem;
+  padding-right: 0.75rem;
+}
+
+thead .rank-th {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: none;
   color: var(--text-muted);
-  border-bottom: 1px solid var(--border);
   background: var(--bg-card-tint);
+  border-bottom: 1px solid var(--border);
+  line-height: 1.3;
+  white-space: nowrap;
 }
 
-.rank-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+.rank-td--steps {
+  color: var(--text-muted);
+  font-weight: 500;
+  font-size: 0.9rem;
 }
 
-.rank-row {
-  display: grid;
-  grid-template-columns: minmax(3rem, 4rem) 1fr minmax(7rem, 9rem) minmax(10rem, 14rem);
-  gap: 0.75rem;
-  align-items: start;
-  padding: 1rem 1.25rem;
+.rank-td--meters {
+  color: var(--cn-red);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.rank-tr {
   border-bottom: 1px solid rgba(196, 30, 58, 0.08);
 }
 
-.rank-row:last-child {
+tbody .rank-tr:last-child {
   border-bottom: none;
 }
 
 .rank-medal {
+  display: inline-block;
   font-size: 1.35rem;
+  line-height: 1;
   text-align: center;
-  align-self: center;
 }
 
 .rank-name-col {
@@ -1193,18 +1256,13 @@ body {
   box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.8);
 }
 
-.rank-steps {
-  font-variant-numeric: tabular-nums;
-  color: var(--cn-red);
-  font-weight: 600;
-  align-self: center;
-}
-
-.rank-progress {
+.rank-td--progress .rank-progress {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 0.5rem;
-  align-self: center;
+  width: 100%;
+  min-width: 0;
 }
 
 .progress-bar {
@@ -1405,13 +1463,7 @@ code {
 }
 
 @media (max-width: 768px) {
-  .rank-card {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .rank-head,
-  .rank-row {
-    min-width: 520px;
+  .rank-table {
+    min-width: 32rem;
   }
 }

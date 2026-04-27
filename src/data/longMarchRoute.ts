@@ -61,8 +61,16 @@ export const METERS_PER_LI = 500
 export const ROUTE_TOTAL_LI = 25000
 export const ROUTE_TOTAL_METERS = ROUTE_TOTAL_LI * METERS_PER_LI
 
+/** 活动规则：每 1 步折合的米数（修改此处即可调整步长与里程的换算） */
+export const METERS_PER_STEP = 0.8
+
+/** 将界面/JSON 中保存的「步数」转为与长征叙事总里程对齐的逻辑米数 */
+export function storedStepsToLogicalMeters(storedSteps: number): number {
+  return Math.max(0, storedSteps) * METERS_PER_STEP
+}
+
 /**
- * 将「逻辑累计步数（米）」映射为折线上的弧长（米），再用于取点。
+ * 将「逻辑累计里程（米）」映射为折线上的弧长（米），再用于取点。
  * 逻辑全长 ROUTE_TOTAL_METERS 对应折线几何全长 LONG_MARCH_GEO_LENGTH_M，终点一致。
  */
 export function logicalMetersToGeoDistanceAlongLine(logicalMeters: number): number {
@@ -71,7 +79,9 @@ export function logicalMetersToGeoDistanceAlongLine(logicalMeters: number): numb
   return t * LONG_MARCH_GEO_LENGTH_M
 }
 
-export function positionAlongRouteForSteps(logicalMeters: number): [number, number] {
+/** @param storedSteps 各组保存的步数（整数），会先按 {@link METERS_PER_STEP} 折合为逻辑米数再映射到路线 */
+export function positionAlongRouteForSteps(storedSteps: number): [number, number] {
+  const logicalMeters = storedStepsToLogicalMeters(storedSteps)
   return pointAlongPolyline(LONG_MARCH_POLYLINE, logicalMetersToGeoDistanceAlongLine(logicalMeters))
 }
 
@@ -108,9 +118,10 @@ export function cumulativeGeoMetersToKeyNodeOrder(nodeOrder: number): number {
 }
 
 /**
- * 根据逻辑累计步数（米），对应折线上已走距离，返回已到达的最远关键节点序号（1～18）。
+ * 根据各组保存的步数，折合为逻辑米数后，对应折线上已走距离，返回已到达的最远关键节点序号（1～18）。
  */
-export function furthestKeyNodeOrderForSteps(logicalMeters: number): number {
+export function furthestKeyNodeOrderForSteps(storedSteps: number): number {
+  const logicalMeters = storedStepsToLogicalMeters(storedSteps)
   const geoDist = logicalMetersToGeoDistanceAlongLine(logicalMeters)
   for (let order = MARCH_KEY_NODES.length; order >= 1; order--) {
     if (geoDist + 1e-6 >= cumulativeGeoMetersToKeyNodeOrder(order)) {

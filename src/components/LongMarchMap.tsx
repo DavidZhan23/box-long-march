@@ -9,6 +9,7 @@ import {
   polylineToLeaflet,
   ROUTE_TOTAL_METERS,
   positionAlongRouteForSteps,
+  storedStepsToLogicalMeters,
 } from '../data/longMarchRoute'
 import type { MapTilePreference } from '../lib/mapTiles'
 import type { PartyGroup } from '../types'
@@ -52,9 +53,10 @@ export function LongMarchMap({ groups, tilePreference, onTileSourceChange }: Pro
     () =>
       groups.map((g) => {
         const pos = positionAlongRouteForSteps(g.steps)
+        const logicalM = storedStepsToLogicalMeters(g.steps)
         const pct =
-          ROUTE_TOTAL_METERS > 0 ? Math.min(100, (g.steps / ROUTE_TOTAL_METERS) * 100) : 0
-        return { group: g, pos, pct }
+          ROUTE_TOTAL_METERS > 0 ? Math.min(100, (logicalM / ROUTE_TOTAL_METERS) * 100) : 0
+        return { group: g, pos, pct, logicalM }
       }),
     [groups],
   )
@@ -103,7 +105,7 @@ export function LongMarchMap({ groups, tilePreference, onTileSourceChange }: Pro
           </Popup>
         </CircleMarker>
       ))}
-      {markers.map(({ group, pos, pct }) => (
+      {markers.map(({ group, pos, pct, logicalM }) => (
         <CircleMarker
           key={group.id}
           center={pos}
@@ -118,7 +120,9 @@ export function LongMarchMap({ groups, tilePreference, onTileSourceChange }: Pro
           <Popup>
             <strong>{group.name}</strong>
             <br />
-            累计：{group.steps.toLocaleString()} 步（米）
+            累计步数：{group.steps.toLocaleString()} 步
+            <br />
+            折合里程：{Math.round(logicalM).toLocaleString()} 米
             <br />
             路线进度：{pct.toFixed(1)}%
           </Popup>

@@ -15,11 +15,10 @@ export function Admin() {
   return (
     <div className="page admin-page">
       <h1 className="page-title">数据录入</h1>
-      {/* <p className="lede narrow">
-        在此填写各铁军小组累计步数（<strong>1 步 = 1 米</strong>）。保存后写入浏览器本地存储，
-        排行榜与地图会优先使用此处数据。部署到服务器时，可将导出的 <code>groups.json</code> 放到{' '}
-        <code>public/data/</code> 目录覆盖默认文件。
-      </p> */}
+      <p className="lede narrow">
+        {/* 在此填写各组<strong>累计步数</strong>（整数）。换算规则为 <strong>1 步 = 0.8 米</strong>
+        （见代码中 <code>METERS_PER_STEP</code>，可自行修改）。保存后写入浏览器本地存储。 */}
+      </p>
 
       <div className="admin-actions">
         <button type="button" className="btn-primary" onClick={handleSave}>
@@ -36,7 +35,7 @@ export function Admin() {
           <thead>
             <tr>
               <th>铁军小组</th>
-              <th>累计步数（米）</th>
+              <th>累计步数</th>
             </tr>
           </thead>
           <tbody>
