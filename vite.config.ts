@@ -10,4 +10,7 @@ const base = process.env.VITE_BASE_PATH ?? '/'
 export default defineConfig({
   plugins: [react()],
   base,
+  // 开发/预览时监听 0.0.0.0，便于同一局域网（如 192.168.100.x）内手机等设备访问本机 IP
+  server: { host: true },
+  preview: { host: true },
 })
