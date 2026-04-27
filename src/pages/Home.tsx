@@ -108,10 +108,17 @@ export function Home() {
                   <span className="rank-medal" title={`第 ${rank} 名`}>
                     {medal(rank)}
                   </span>
-                  <span className="rank-name">
-                    <span className="name-dot" style={{ background: g.color }} />
-                    {g.name}
-                  </span>
+                  <div className="rank-name-col">
+                    <span className="rank-name">
+                      <span className="name-dot" style={{ background: g.color }} />
+                      {g.name}
+                    </span>
+                    {g.members && g.members.length > 0 ? (
+                      <span className="rank-members" aria-label={`${g.name}成员`}>
+                        {g.members.join('、')}
+                      </span>
+                    ) : null}
+                  </div>
                   <span className="rank-steps">{g.steps.toLocaleString()}</span>
                   <span className="rank-progress">
                     <span className="progress-bar" aria-hidden>

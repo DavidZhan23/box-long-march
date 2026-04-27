@@ -20,7 +20,7 @@ export function GroupsProvider({ children }: { children: ReactNode }) {
         if (cancelled) return
         if (cached && cached.length) {
           const byId = new Map(cached.map((g) => [g.id, g]))
-          // 只合并本地步数；名称、颜色以 groups.json 为准，避免改 JSON 后仍被旧缓存盖住
+          // 只合并本地步数；名称、颜色、成员以 groups.json 为准，避免改 JSON 后仍被旧缓存盖住
           const merged = base.map((g) => {
             const c = byId.get(g.id)
             if (!c) return g
