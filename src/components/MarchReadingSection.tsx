@@ -1,4 +1,6 @@
-const MARCH_MAP_SRC = '/images/长征图片.jpg'
+import { publicUrl } from '../lib/publicUrl'
+
+const MARCH_MAP_SRC = publicUrl('images/长征图片.jpg')
 
 export function MarchReadingSection() {
   return (

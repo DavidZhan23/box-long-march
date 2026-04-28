@@ -1,34 +1,40 @@
 import { useEffect, useMemo, useState } from 'react'
 import { TileLayer } from 'react-leaflet'
-import { probeOsmTile, type MapTilePreference } from '../lib/mapTiles'
-
-type Layer = 'osm' | 'carto'
+import { OSM_TILE_URL, probeOsmTile, type ActiveTileLayer, type MapTilePreference } from '../lib/mapTiles'
 
 type Props = {
   preference: MapTilePreference
-  onSourceChange?: (source: Layer) => void
+  onSourceChange?: (source: ActiveTileLayer | null) => void
 }
 
 export function SmartTileLayer({ preference, onSourceChange }: Props) {
-  const [probeResult, setProbeResult] = useState<'idle' | 'ok' | 'fail'>('idle')
+  const [autoLayer, setAutoLayer] = useState<ActiveTileLayer | null>(null)
 
-  const layer: Layer = useMemo(() => {
+  const layer: ActiveTileLayer = useMemo(() => {
     if (preference === 'osm') return 'osm'
     if (preference === 'carto') return 'carto'
-    return probeResult === 'ok' ? 'osm' : 'carto'
-  }, [preference, probeResult])
+    return autoLayer ?? 'osm'
+  }, [preference, autoLayer])
 
   useEffect(() => {
-    onSourceChange?.(layer)
-  }, [layer, onSourceChange])
+    if (preference === 'auto') onSourceChange?.(autoLayer)
+    else onSourceChange?.(preference)
+  }, [preference, autoLayer, onSourceChange])
 
   useEffect(() => {
-    if (preference !== 'auto') return
+    if (preference !== 'auto') {
+      setAutoLayer(null)
+      return
+    }
     let cancelled = false
-    probeOsmTile().then((ok) => {
-      if (cancelled) return
-      setProbeResult(ok ? 'ok' : 'fail')
-    })
+    setAutoLayer(null)
+    ;(async () => {
+      if (await probeOsmTile()) {
+        if (!cancelled) setAutoLayer('osm')
+        return
+      }
+      if (!cancelled) setAutoLayer('carto')
+    })()
     return () => {
       cancelled = true
     }
@@ -38,11 +44,10 @@ export function SmartTileLayer({ preference, onSourceChange }: Props) {
     return (
       <TileLayer
         key="osm"
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> 贡献者'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        subdomains={['a', 'b', 'c']}
-        maxZoom={19}
-        maxNativeZoom={19}
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> · <a href="https://www.openstreetmap.de/">FOSSGIS</a>'
+        url={OSM_TILE_URL}
+        maxZoom={20}
+        maxNativeZoom={20}
       />
     )
   }

@@ -1,7 +1,12 @@
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react'
+import groupsBundled from '../data/groupsBundled.json'
 import { loadGroupsFromStorage, saveGroupsToStorage } from '../lib/groupsStorage'
+import { publicUrl } from '../lib/publicUrl'
 import type { PartyGroup } from '../types'
 import { GroupsContext } from './groups-context'
+
+const OFFLINE_SINGLE = import.meta.env.VITE_OFFLINE_SINGLE === '1'
+const bundledSeed = groupsBundled as PartyGroup[]
 
 export function GroupsProvider({ children }: { children: ReactNode }) {
   const [groups, setGroups] = useState<PartyGroup[]>([])
@@ -13,10 +18,15 @@ export function GroupsProvider({ children }: { children: ReactNode }) {
     ;(async () => {
       try {
         const cached = loadGroupsFromStorage()
-        const dataUrl = `${import.meta.env.BASE_URL}data/groups.json`
-        const res = await fetch(dataUrl)
-        if (!res.ok) throw new Error(`无法加载 ${dataUrl}`)
-        const base = (await res.json()) as PartyGroup[]
+        let base: PartyGroup[]
+        if (OFFLINE_SINGLE) {
+          base = bundledSeed.map((g) => ({ ...g }))
+        } else {
+          const dataUrl = publicUrl('data/groups.json')
+          const res = await fetch(dataUrl)
+          if (!res.ok) throw new Error(`无法加载 ${dataUrl}`)
+          base = (await res.json()) as PartyGroup[]
+        }
         if (cancelled) return
         if (cached && cached.length) {
           const byId = new Map(cached.map((g) => [g.id, g]))

@@ -11,7 +11,7 @@ import {
   positionAlongRouteForSteps,
   storedStepsToLogicalMeters,
 } from '../data/longMarchRoute'
-import type { MapTilePreference } from '../lib/mapTiles'
+import type { ActiveTileLayer, MapTilePreference } from '../lib/mapTiles'
 import type { PartyGroup } from '../types'
 
 /** 懒加载后或部分网络环境下容器尺寸未就绪，需 invalidateSize 否则底图空白 */
@@ -45,7 +45,7 @@ function FitBounds({ groups }: { groups: PartyGroup[] }) {
 type Props = {
   groups: PartyGroup[]
   tilePreference: MapTilePreference
-  onTileSourceChange?: (source: 'osm' | 'carto') => void
+  onTileSourceChange?: (source: ActiveTileLayer | null) => void
 }
 
 export function LongMarchMap({ groups, tilePreference, onTileSourceChange }: Props) {

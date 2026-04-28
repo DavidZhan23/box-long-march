@@ -1,13 +1,18 @@
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, HashRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { Layout } from './components/Layout'
 import { GroupsProvider } from './context/GroupsProvider'
 import { Admin } from './pages/Admin'
 import { Home } from './pages/Home'
 import { MapPage } from './pages/MapPage'
 
-/** 与 vite.config base 一致；GitHub Pages 子路径部署时必须带 basename */
+const offlineSingle = import.meta.env.VITE_OFFLINE_SINGLE === '1'
+const Router = offlineSingle ? HashRouter : BrowserRouter
+
+/** 与 vite.config base 一致；GitHub Pages 子路径部署时必须带 basename。离线单文件用 HashRouter，不设 basename。 */
 const routerBasename =
-  import.meta.env.BASE_URL === '/' ? '' : import.meta.env.BASE_URL.replace(/\/$/, '')
+  offlineSingle || import.meta.env.BASE_URL === '/'
+    ? undefined
+    : import.meta.env.BASE_URL.replace(/\/$/, '')
 
 export default function App() {
   return (
@@ -15,7 +20,7 @@ export default function App() {
       <div className="app-root">
         <div className="app-bg-layers" aria-hidden />
         <div className="app-content">
-          <BrowserRouter basename={routerBasename}>
+          <Router basename={routerBasename}>
           <Routes>
             <Route element={<Layout />}>
               <Route index element={<Home />} />
@@ -24,7 +29,7 @@ export default function App() {
               <Route path="*" element={<Navigate to="/" replace />} />
             </Route>
           </Routes>
-          </BrowserRouter>
+          </Router>
         </div>
       </div>
     </GroupsProvider>
