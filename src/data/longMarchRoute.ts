@@ -62,7 +62,7 @@ export const ROUTE_TOTAL_LI = 25000
 export const ROUTE_TOTAL_METERS = ROUTE_TOTAL_LI * METERS_PER_LI
 
 /** 活动规则：每 1 步折合的米数（修改此处即可调整步长与里程的换算） */
-export const METERS_PER_STEP = 0.8
+export const METERS_PER_STEP = 0.9
 
 /** 将界面/JSON 中保存的「步数」转为与长征叙事总里程对齐的逻辑米数 */
 export function storedStepsToLogicalMeters(storedSteps: number): number {
