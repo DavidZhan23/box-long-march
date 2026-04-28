@@ -71,3 +71,8 @@ export default defineConfig([
   },
 ])
 ```
+## how to host a offline version
+run this code in your terminal
+```
+npm run build:offline
+```
